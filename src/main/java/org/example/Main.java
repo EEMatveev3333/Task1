@@ -9,60 +9,68 @@ public class Main {
         System.out.println("Hello and welcome!");
         Account acc1 = new Account("Ivanov Ivan Ivanovich");
         System.out.println(acc1);
-        acc1.setOwnerName("Ivanov1 Ivan1 Ivanovich1");
+        acc1.setCurrencySaldoPair(Currency.RUB,100);
         System.out.println(acc1);
-        acc1.undo();
+        acc1.setCurrencySaldoPair(Currency.EUR,200);
         System.out.println(acc1);
-//        acc1.undo();
+        acc1.setCurrencySaldoPair(Currency.USD,300);
+        System.out.println(acc1);
+//        Account acc1 = new Account("Ivanov Ivan Ivanovich");
 //        System.out.println(acc1);
-        Account acc2 = new Account("Petrov Petr Petrovich");
-        System.out.println(acc2);
-        Account acc3 = new Account("Sidorov Sidor Sidorovich");
-        System.out.println(acc3);
-
-        System.out.println("Hello and welcome!");
-
-        acc1.setOwnerName("Ivanov1 Ivan1 Ivanovich1");
-        System.out.println(acc1);
-        acc1.setCurrencySaldoPair("RUB",100);
-        Account.AccountStateSavings ASS1 = acc1.SaveState();
-        acc1.setCurrencySaldoPair("USD",200);
-        Account.AccountStateSavings ASS2 = acc1.SaveState();
-        acc1.setCurrencySaldoPair("EUR",300);
-        Account.AccountStateSavings ASS3 = acc1.SaveState();
-        System.out.println(acc1);
-
-        acc1.LoadState(ASS2);
-        System.out.println(acc1);
-        acc1.LoadState(ASS1);
-        System.out.println(acc1);
-        acc1.LoadState(ASS3);
-        System.out.println(acc1);
-
-//        acc1.undo();
+//        acc1.setOwnerName("Ivanov1 Ivan1 Ivanovich1");
 //        System.out.println(acc1);
 //        acc1.undo();
 //        System.out.println(acc1);
+////        acc1.undo();
+////        System.out.println(acc1);
+//        Account acc2 = new Account("Petrov Petr Petrovich");
+//        System.out.println(acc2);
+//        Account acc3 = new Account("Sidorov Sidor Sidorovich");
+//        System.out.println(acc3);
+//
+//        System.out.println("Hello and welcome!");
+//
+//        acc1.setOwnerName("Ivanov1 Ivan1 Ivanovich1");
+//        System.out.println(acc1);
+//        acc1.setCurrencySaldoPair("RUB",100);
+//        Account.AccountStateSavings ASS1 = acc1.SaveState();
+//        acc1.setCurrencySaldoPair("USD",200);
+//        Account.AccountStateSavings ASS2 = acc1.SaveState();
+//        acc1.setCurrencySaldoPair("EUR",300);
+//        Account.AccountStateSavings ASS3 = acc1.SaveState();
+//        System.out.println(acc1);
+//
+//        acc1.LoadState(ASS2);
+//        System.out.println(acc1);
+//        acc1.LoadState(ASS1);
+//        System.out.println(acc1);
+//        acc1.LoadState(ASS3);
+//        System.out.println(acc1);
+
+//        acc1.undo();
+//        System.out.println(acc1);
+//        acc1.undo();
+//        System.out.println(acc1);
 //        acc1.undo();
 //        System.out.println(acc1);
 //        acc1.undo();
 //        System.out.println(acc1);
 
-        System.out.println(acc1);
-        acc2.setCurrencySaldoPair("RUB",200);
-        System.out.println(acc2);
-        System.out.println(acc2.getCurrencySaldo("RUB"));
-        acc2.setCurrencySaldoPair("RUB",300);
-        System.out.println(acc2);
-        System.out.println(acc2.getCurrencySaldo("RUB"));
-        acc2.setCurrencySaldoPair("RUB",8888);
-        System.out.println(acc2);
-        System.out.println(acc2.getCurrencySaldo("RUB"));
-        acc2.setCurrencySaldoPair("EUR",99999);
-        System.out.println(acc2.getCurrencySaldo("RUB"));
-        System.out.println(acc2);
-        acc3.setCurrencySaldoPair("RUB",300);
-        System.out.println(acc3);
+//        System.out.println(acc1);
+//        acc2.setCurrencySaldoPair("RUB",200);
+//        System.out.println(acc2);
+//        System.out.println(acc2.getCurrencySaldo("RUB"));
+//        acc2.setCurrencySaldoPair("RUB",300);
+//        System.out.println(acc2);
+//        System.out.println(acc2.getCurrencySaldo("RUB"));
+//        acc2.setCurrencySaldoPair("RUB",8888);
+//        System.out.println(acc2);
+//        System.out.println(acc2.getCurrencySaldo("RUB"));
+//        acc2.setCurrencySaldoPair("EUR",99999);
+//        System.out.println(acc2.getCurrencySaldo("RUB"));
+//        System.out.println(acc2);
+//        acc3.setCurrencySaldoPair("RUB",300);
+//        System.out.println(acc3);
 
 //        String s = "[RUB]200[/RUB]";
 //        String Currency = "RUB";

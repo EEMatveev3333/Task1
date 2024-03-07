@@ -11,7 +11,9 @@ public class Account {
     // Количество валюты хранится в виде целочисленного значения.
     // Валюта должна быть представлена таким образом, чтобы указать можно было только значение из некоторого фиксированного списка значений
     // (конкретный перечень допустимо указать произвольно в коде).
-    private String currencySaldoTextList = "";//"[RUB]{0};[USD]{0};[EUR]{0}";
+
+    //private String currencySaldoTextList = "";//"[RUB]{0};[USD]{0};[EUR]{0}";
+    private HashMap <Currency,Integer> currencySaldoMap = new HashMap<>();//"";//"[RUB]{0};[USD]{0};[EUR]{0}";
     //-------------------------------------------------------------------
 
     //3. Создание объекта Account возможно только с указанием имени владельца счета.
@@ -37,63 +39,68 @@ public class Account {
 
     public void setOwnerName(String ownerName) {
         if (!ownerName.equals(this.ownerName)) {
-            this.setDeque(); // предварительно сохраняем историю
+//            this.setDeque(); // предварительно сохраняем историю
             this.ownerName = ownerName;
         }
     }
     //-------------------------------------------------------------------
 
     //5. Для пар валюта-количество необходимо сделать только геттер.
-    public String getCurrencySaldoTextList() {
-        return currencySaldoTextList;
-    }
-    //-------------------------------------------------------------------
-    public boolean containsKeyCurr(String Currency){
-        if (this.currencySaldoTextList.contains("["+ Currency + "]"))
-            return true;
-        else
-            return false;
+    public HashMap<Currency, Integer> getCurrencySaldoMap() {
+        return currencySaldoMap;
     }
 
-    public Integer getCurrencySaldo(String Currency){
+//    public String getCurrencySaldoTextList() {
+//        return currencySaldoTextList;
+//    }
+//    //-------------------------------------------------------------------
+//    public boolean containsKeyCurr(String Currency){
+//        if (this.currencySaldoTextList.contains("["+ Currency + "]"))
+//            return true;
+//        else
+//            return false;
+//    }
 
-        if (this.currencySaldoTextList.contains("["+ Currency + "]")) {
-            String tmp_currencySaldoTextList = this.currencySaldoTextList.substring
-                    (this.currencySaldoTextList.indexOf("[" + Currency + "]")  + Currency.length() + 2
-                            , this.currencySaldoTextList.indexOf("[/" + Currency + "]")
-                    );
-            return Integer.parseInt(tmp_currencySaldoTextList);
+    public Integer getCurrencySaldo(Currency cur){
+
+        if (currencySaldoMap.containsKey(cur)) {
+//            String tmp_currencySaldoTextList = this.currencySaldoTextList.substring
+//                    (this.currencySaldoTextList.indexOf("[" + Currency + "]")  + Currency.length() + 2
+//                            , this.currencySaldoTextList.indexOf("[/" + Currency + "]")
+//                    );
+            return currencySaldoMap.get(cur);
         }
         else
             return 0;
     }
 
     //6. Необходим метод, который принимает Валюту и её количество и заменяет текущее количество данной Валюты на указанное. Если такой валюты ранее не было – она добавляется в список.
-    public void setCurrencySaldoPair(String Currency, Integer Saldo) throws IllegalArgumentException   {
+    public void setCurrencySaldoPair(Currency cur, Integer Saldo) throws IllegalArgumentException   {
         //        — Количество валюты не может быть отрицательным
         if (Saldo < 0)
             throw new IllegalArgumentException("Saldo cannot be negative");
 
-        if (this.currencySaldoTextList.contains("["+ Currency + "]")) {
-
-            String tmp_currencySaldoTextList = this.currencySaldoTextList.replace(
-                                                                    this.currencySaldoTextList.substring
-                                                                            (this.currencySaldoTextList.indexOf("[" + Currency + "]")  //Currency.length() + 1
-                                                                                    , this.currencySaldoTextList.indexOf("[/" + Currency + "]")
-                                                                            )
-                                                                    //"["+ Currency + "]" + Saldo + "[/"+ Currency + "]"
-                                                                    , "[" + Currency + "]" + Saldo// + "[/"+ Currency + "]"
-                                                            );
-            if (!tmp_currencySaldoTextList.equals(this.currencySaldoTextList))
-            {
-                this.setDeque(); // предварительно сохраняем историю
-                this.currencySaldoTextList = tmp_currencySaldoTextList;
-            }
-        }
-        else{
-            this.setDeque(); // предварительно сохраняем историю
-            this.currencySaldoTextList = this.currencySaldoTextList + "["+ Currency + "]" + Saldo + "[/"+ Currency + "]";
-        }
+        currencySaldoMap.put(cur,Saldo);
+//        if (this.currencySaldoTextList.contains("["+ Currency + "]")) {
+//
+//            String tmp_currencySaldoTextList = this.currencySaldoTextList.replace(
+//                                                                    this.currencySaldoTextList.substring
+//                                                                            (this.currencySaldoTextList.indexOf("[" + Currency + "]")  //Currency.length() + 1
+//                                                                                    , this.currencySaldoTextList.indexOf("[/" + Currency + "]")
+//                                                                            )
+//                                                                    //"["+ Currency + "]" + Saldo + "[/"+ Currency + "]"
+//                                                                    , "[" + Currency + "]" + Saldo// + "[/"+ Currency + "]"
+//                                                            );
+//            if (!tmp_currencySaldoTextList.equals(this.currencySaldoTextList))
+//            {
+//                this.setDeque(); // предварительно сохраняем историю
+//                this.currencySaldoTextList = tmp_currencySaldoTextList;
+//            }
+//        }
+//        else{
+//            this.setDeque(); // предварительно сохраняем историю
+//            this.currencySaldoTextList = this.currencySaldoTextList + "["+ Currency + "]" + Saldo + "[/"+ Currency + "]";
+//        }
 
     }
 
@@ -102,10 +109,12 @@ public class Account {
     public String toString() {
         return "Account{" +
                 "ownerName='" + ownerName + '\'' +
-                ", currencySaldoTextList='" + currencySaldoTextList + '\'' +
+                ", currencySaldoMap='" + currencySaldoMap + '\'' +
                 '}';
     }
+/*
 
+    //------------------------------------------------------------------------------------------------------------------------------------------------------
     //    Часть 2. Отмена
 //    Необходимо реализовать в классе Account метод undo, который будет отменять одно последнее изменение объекта класса Account. Метод должен поддерживать следующие требования:
 //
@@ -166,6 +175,8 @@ public class Account {
     public void setDeque() {
         this.deque.add(this.toString());
     }
+
+
     //private PriorityQueue<String> myPriorityQueue = new PriorityQueue<String>();
 
     //    Часть 3. Сохранение
@@ -226,5 +237,6 @@ public class Account {
 //    Реализуйте модульные тесты для проверки работоспособности кода.
 //
 //            Внимание! Задание проверяется преподавателем. Выполните его и укажите ваш ответ в форме ниже.
+*/
 
 }
