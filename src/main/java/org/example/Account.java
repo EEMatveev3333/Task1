@@ -3,6 +3,10 @@ package org.example;
 import java.util.*;
 
 public class Account {
+
+    public interface Action {
+        void make();
+    }
     //1. Account имеет поле для имени владельца: String
     private String ownerName;
     //-------------------------------------------------------------------
@@ -21,7 +25,7 @@ public class Account {
         //Также необходимо реализовать следующие ограничения:
         //        — Имя не может быть null или пустым
         //В случае нарушения ограничений необходимо бросать подходящее исключение.
-        if (ownerName != null && !ownerName.trim().isEmpty()) {
+        if (ownerName != null && !ownerName.trim().isEmpty() && !ownerName.isBlank())  {
             // Обработка строки
             this.ownerName = ownerName;
         }
@@ -39,7 +43,9 @@ public class Account {
 
     public void setOwnerName(String ownerName) {
         if (!ownerName.equals(this.ownerName)) {
-//            this.setDeque(); // предварительно сохраняем историю
+            //this.setDeque(); // предварительно сохраняем историю
+            String tmp = this.ownerName;
+            this.deque.push(()->Account.this.ownerName = tmp);
             this.ownerName = ownerName;
         }
     }
@@ -47,19 +53,21 @@ public class Account {
 
     //5. Для пар валюта-количество необходимо сделать только геттер.
     public HashMap<Currency, Integer> getCurrencySaldoMap() {
-        return currencySaldoMap;
+
+        return new HashMap<>(currencySaldoMap);
     }
 
 //    public String getCurrencySaldoTextList() {
 //        return currencySaldoTextList;
 //    }
 //    //-------------------------------------------------------------------
-//    public boolean containsKeyCurr(String Currency){
+    public boolean containsKeyCurr(Currency cur){
+        return currencySaldoMap.containsKey(cur);
 //        if (this.currencySaldoTextList.contains("["+ Currency + "]"))
 //            return true;
 //        else
 //            return false;
-//    }
+    }
 
     public Integer getCurrencySaldo(Currency cur){
 
@@ -79,7 +87,12 @@ public class Account {
         //        — Количество валюты не может быть отрицательным
         if (Saldo < 0)
             throw new IllegalArgumentException("Saldo cannot be negative");
-
+        Integer tmp = this.currencySaldoMap.get(cur);//,Saldo);;
+        if (tmp == null)
+            this.deque.push(()->Account.this.currencySaldoMap.remove(cur));// .put(cur,tmp));
+        else
+            this.deque.push(()->Account.this.currencySaldoMap.put(cur,tmp));
+        //this.deque.push(()->);
         currencySaldoMap.put(cur,Saldo);
 //        if (this.currencySaldoTextList.contains("["+ Currency + "]")) {
 //
@@ -112,7 +125,7 @@ public class Account {
                 ", currencySaldoMap='" + currencySaldoMap + '\'' +
                 '}';
     }
-/*
+
 
     //------------------------------------------------------------------------------------------------------------------------------------------------------
     //    Часть 2. Отмена
@@ -134,7 +147,7 @@ public class Account {
 //
 //    Реализуйте модульные тесты для проверки работоспособности кода.
 //
-    private Deque<String> deque = new ArrayDeque<>();
+    Deque<Action> deque = new ArrayDeque<>();
 
     public boolean canUndo() {
         return !deque.isEmpty();
@@ -145,36 +158,12 @@ public class Account {
         if (this.deque.isEmpty())
             throw new NoSuchElementException("Элемент не содержит элементов истории для отката");
         else
-        {
-            String propHistInst = this.deque.removeLast();
-            //Account{ownerName='Petrov Petr Petrovich', currencySaldoTextList='[RUB]8888[/RUB]'}
-            String propHistInst_ownerName =
-                            propHistInst.substring
-                                    (propHistInst.indexOf("Account{ownerName='") + 19 //Currency.length() + 1
-                                            , propHistInst.indexOf("', currencySaldoTextList='")
-                                    );
-            String propHistInst_currencySaldoTextList =
-                    propHistInst.substring
-                            (propHistInst.indexOf("currencySaldoTextList='") + 23 //Currency.length() + 1
-                                    , propHistInst.indexOf("'}")
-                            );
-//            System.out.println(propHistInst);
-//            System.out.println(propHistInst_ownerName);
-//            System.out.println(propHistInst_currencySaldoTextList);
-
-            if (!this.ownerName.equals(propHistInst_ownerName))
-                this.ownerName = propHistInst_ownerName;
-
-            if (!this.currencySaldoTextList.equals(propHistInst_currencySaldoTextList))
-                this.currencySaldoTextList = propHistInst_currencySaldoTextList;
-
-        }
-        //return deque;
+            this.deque.pop().make();
     }
 
-    public void setDeque() {
-        this.deque.add(this.toString());
-    }
+//    public void setDeque() {
+//        this.deque.add(this.toString());
+//    }
 
 
     //private PriorityQueue<String> myPriorityQueue = new PriorityQueue<String>();
@@ -185,42 +174,53 @@ public class Account {
         //private final @Getter String ownerName;
         //private final Map<Currency, Integer> currencyMap;
         private final String ownerName;
-        private final String currencySaldoTextList;
+//        private final String currencySaldoTextList;
+        private final HashMap <Currency,Integer> currencySaldoMap;// = new HashMap<>();//"";//"[RUB]{0};[USD]{0};[EUR]{0}";
 
-        public AccountStateSavings(String ownerName, String currencySaldoTextList) {
-            this.ownerName = ownerName;
-            this.currencySaldoTextList = currencySaldoTextList;
+
+        public AccountStateSavings(String ownerName, HashMap currencySaldoMap) {
+            this.ownerName = new String(ownerName);
+            this.currencySaldoMap = new HashMap<>(currencySaldoMap);
         }
 
-        public Integer getCurrencySaldo(String Currency){
+        public Integer getCurrencySaldo(Currency cur){
 
-            if (this.currencySaldoTextList.contains("["+ Currency + "]")) {
-                String tmp_currencySaldoTextList = this.currencySaldoTextList.substring
-                        (this.currencySaldoTextList.indexOf("[" + Currency + "]")  + Currency.length() + 2
-                                , this.currencySaldoTextList.indexOf("[/" + Currency + "]")
-                        );
-                return Integer.parseInt(tmp_currencySaldoTextList);
-            }
-            else
-                return 0;
+            return this.currencySaldoMap.get(cur);
+//            if (this.currencySaldoTextList.contains("["+ Currency + "]")) {
+//                String tmp_currencySaldoTextList = this.currencySaldoTextList.substring
+//                        (this.currencySaldoTextList.indexOf("[" + Currency + "]")  + Currency.length() + 2
+//                                , this.currencySaldoTextList.indexOf("[/" + Currency + "]")
+//                        );
+//                return Integer.parseInt(tmp_currencySaldoTextList);
+//            }
+//            else
+//                return 0;
         }
 
         public String getOwnerName() {
             return ownerName;
         }
+
+        @Override
+        public String toString() {
+            return "AccountStateSavings{" +
+                    "ownerName='" + ownerName + '\'' +
+                    ", currencySaldoMap=" + currencySaldoMap +
+                    '}';
+        }
     }
 
     public AccountStateSavings SaveState(){
-        AccountStateSavings ret = new AccountStateSavings(this.ownerName,this.currencySaldoTextList);
+        AccountStateSavings ret = new AccountStateSavings(this.ownerName,this.currencySaldoMap);
         return ret;
     }
     public void LoadState(AccountStateSavings ASS){
-        this.ownerName = ASS.ownerName;
-        this.currencySaldoTextList = ASS.currencySaldoTextList;
+        this.ownerName = new String(ASS.ownerName);
+        this.currencySaldoMap = new HashMap<>(ASS.currencySaldoMap);
         this.deque.clear();
     };
 
-
+/*
 //
 //            — Метод сохранения возвращает объект, который хранит состояние Account на момент запроса сохранения.
 //
