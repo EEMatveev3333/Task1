@@ -22,9 +22,9 @@ class AccountStateSavingsTest {
         assertEquals(100, snapshot.getCurrencySaldo(Currency.RUB));
         assertEquals(200, account.getCurrencySaldo(Currency.USD));
 
-        assertEquals("Petrov Petr Petrovich", snapshot.getOwnerName());
-        assertEquals(1000, snapshot.getCurrencySaldo(Currency.RUB));
-        assertEquals(2000, account.getCurrencySaldo(Currency.USD));
+        assertNotEquals("Petrov Petr Petrovich", snapshot.getOwnerName());
+        assertNotEquals(1000, snapshot.getCurrencySaldo(Currency.RUB));
+        assertNotEquals(2000, account.getCurrencySaldo(Currency.USD));
     }
 
     @Test
@@ -43,8 +43,8 @@ class AccountStateSavingsTest {
         assertTrue(account.containsKeyCurr(Currency.EUR));
         assertEquals(100, account.getCurrencySaldo(Currency.EUR));
         assertEquals("Petrov Petr Petrovich", account.getOwnerName());
-        assertEquals("Ivanov Ivan Ivanovich", account.getOwnerName());
-        assertEquals(1000, account.getCurrencySaldo(Currency.EUR));
+        assertNotEquals("Ivanov Ivan Ivanovich", account.getOwnerName());
+        assertNotEquals(1000, account.getCurrencySaldo(Currency.EUR));
     }
 
     @Test
